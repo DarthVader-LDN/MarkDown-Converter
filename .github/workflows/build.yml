@@ -1,0 +1,46 @@
+name: Build Windows EXE
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Get the files from this repo
+        uses: actions/checkout@v4
+
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      - name: Build the executable
+        run: python -m PyInstaller --clean --noconfirm MarkItDown-GUI.spec
+
+      - name: Save the .exe as a build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: MarkItDownConverter
+          path: dist/MarkItDownConverter.exe
+          if-no-files-found: error
+
+      - name: Publish to a Release (permanent download link)
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete latest --yes --cleanup-tag 2>/dev/null || true
+          gh release create latest dist/MarkItDownConverter.exe \
+            --title "MarkItDown Converter (latest build)" \
+            --notes "Standalone Windows app — download MarkItDownConverter.exe below and double-click to run."
