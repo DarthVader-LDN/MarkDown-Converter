@@ -1,0 +1,17 @@
+# Dependencies for building MarkItDown Converter (offline document support).
+#
+# Pinned to the version you provided (0.1.6) with the offline extras enabled:
+#   pptx, docx, xlsx, xls, pdf, outlook
+# (epub, html, csv, json, rss, ipynb, plain text and zip work from the core deps.)
+#
+# Intentionally EXCLUDED (cloud / network / extra binaries — add later if needed):
+#   azure-ai-documentintelligence, azure-ai-contentunderstanding  (need API keys)
+#   youtube-transcript-api                                        (needs network)
+#   pydub + SpeechRecognition                                     (audio; need ffmpeg + cloud)
+#
+# To build from the exact source ZIP you attached instead of PyPI, replace the
+# first line with a path to the extracted package, e.g.:
+#   ./markitdown-main/packages/markitdown[pptx,docx,xlsx,xls,pdf,outlook]
+
+markitdown[pptx,docx,xlsx,xls,pdf,outlook]==0.1.6
+pyinstaller>=6.0
